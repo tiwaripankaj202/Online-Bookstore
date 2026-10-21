@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block title %}Sales reports{% endblock %}
+
+{% block content %}
+<section class="container section">
+    <div class="page-heading">
+        <p class="eyebrow">Store operations</p>
+        <h1>Sales reports</h1>
+        <p>Monitor store performance and the titles readers are choosing.</p>
+    </div>
+    <div class="admin-shell">
+        <aside class="admin-sidebar" aria-label="Admin navigation">
+            <a href="{{ url_for('admin_dashboard') }}">Overview</a>
+            <a href="{{ url_for('admin_books') }}">Manage books</a>
+            <a href="{{ url_for('admin_orders') }}">Customer orders</a>
+            <a class="active" href="{{ url_for('admin_reports') }}">Sales reports</a>
+            <a href="{{ url_for('admin_logout') }}">Log out</a>
+        </aside>
+        <div class="admin-content">
+            <div class="stats-grid report-stats">
+                <article class="stat-box"><span class="stat-label">Revenue</span><h2>Total sales</h2><p>₹{{ '%.2f' % total_sales }}</p></article>
+                <article class="stat-box"><span class="stat-label">Activity</span><h2>Orders</h2><p>{{ order_count }}</p></article>
+                <article class="stat-box"><span class="stat-label">Fulfillment</span><h2>Pending</h2><p>{{ pending_orders }}</p></article>
+                <article class="stat-box"><span class="stat-label">Fulfillment</span><h2>Delivered</h2><p>{{ delivered_orders }}</p></article>
+            </div>
+            <div class="report-grid">
+                <section class="report-block">
+                    <p class="eyebrow">Reader favorites</p>
+                    <h2>Best selling books</h2>
+                    <ul>
+                        {% for item in best_sellers %}
+                        <li><span>{{ item.title }}</span><strong>× {{ item.quantity }}</strong></li>
+                        {% else %}
+                        <li>No sales data yet.</li>
+                        {% endfor %}
+                    </ul>
+                </section>
+                <section class="report-block">
+                    <p class="eyebrow">By subject</p>
+                    <h2>Sales by category</h2>
+                    <ul>
+                        {% for category, amount in sales_by_category %}
+                        <li><span>{{ category }}</span><strong>₹{{ '%.2f' % amount }}</strong></li>
+                        {% else %}
+                        <li>No category sales yet.</li>
+                        {% endfor %}
+                    </ul>
+                </section>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin overview{% endblock %}
+
+{% block content %}
+<section class="container section">
+    <div class="page-heading">
+        <p class="eyebrow">Store operations</p>
+        <h1>Admin overview</h1>
+        <p>A quick look at the library and recent activity.</p>
+    </div>
+    <div class="admin-shell">
+        <aside class="admin-sidebar" aria-label="Admin navigation">
+            <a class="active" href="{{ url_for('admin_dashboard') }}">Overview</a>
+            <a href="{{ url_for('admin_books') }}">Manage books</a>
+            <a href="{{ url_for('admin_orders') }}">Customer orders</a>
+            <a href="{{ url_for('admin_reports') }}">Sales reports</a>
+            <a href="{{ url_for('admin_logout') }}">Log out</a>
+        </aside>
+        <div class="admin-content">
+            <div class="stats-grid">
+                <article class="stat-box"><span class="stat-label">Inventory</span><h2>Total books</h2><p>{{ total_books }}</p></article>
+                <article class="stat-box"><span class="stat-label">Fulfillment</span><h2>Total orders</h2><p>{{ total_orders }}</p></article>
+                <article class="stat-box"><span class="stat-label">Revenue</span><h2>Total sales</h2><p>₹{{ '%.2f' % total_sales }}</p></article>
+            </div>
+            <section class="admin-panel">
+                <div class="section-header">
+                    <div><p class="eyebrow">Latest activity</p><h2>Recent orders</h2></div>
+                    <a href="{{ url_for('admin_orders') }}" class="text-link">All orders →</a>
+                </div>
+                {% for order in recent_orders %}
+                <div class="mini-order">
+                    <strong>#{{ order.order_id }}</strong>
+                    <span>{{ order.customer_name }}</span>
+                    <span class="status-badge" data-status="{{ order.status }}">{{ order.status }}</span>
+                </div>
+                {% else %}
+                <div class="empty-state"><p>No recent orders to show.</p></div>
+                {% endfor %}
+            </section>
+        </div>
+    </div>
+</section>
+{% endblock %}

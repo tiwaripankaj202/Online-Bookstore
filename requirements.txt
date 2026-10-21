@@ -1,0 +1,5 @@
+Flask==3.0.3
+# Oracle driver is optional for demo mode. Install it separately on a supported Python version when you want real database connectivity.
+# oracledb==2.4.1
+python-dotenv==1.0.1
+Werkzeug==3.0.3

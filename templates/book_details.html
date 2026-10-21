@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ book.title }}{% endblock %}
+
+{% block content %}
+<section class="container section">
+    <p class="eyebrow"><a href="{{ url_for('books') }}">Library</a> / {{ book.category }}</p>
+    <div class="product-detail surface">
+        <div class="detail-image">
+            <img src="{{ book.image_url }}" alt="{{ book.title }}" fetchpriority="high">
+        </div>
+        <div class="detail-content">
+            <span class="pill">{{ book.category }}</span>
+            <h1>{{ book.title }}</h1>
+            <p class="book-author">by {{ book.author }}</p>
+            <p class="price">₹{{ '%.2f' % book.price }}</p>
+            <p class="stock-note">{% if book.stock > 0 %}{{ book.stock }} in stock{% else %}Currently unavailable{% endif %}</p>
+            <p class="detail-description">{{ book.description }}</p>
+
+            <form method="post" action="{{ url_for('cart_add') }}" class="add-to-cart-form detail-cart-form">
+                <input type="hidden" name="book_id" value="{{ book.book_id }}">
+                <div class="form-field">
+                    <label for="quantity">Quantity</label>
+                    <input id="quantity" type="number" name="quantity" min="1" max="{{ book.stock }}" value="1" {% if book.stock < 1 %}disabled{% endif %}>
+                </div>
+                <button type="submit" class="btn" {% if book.stock < 1 %}disabled{% endif %}>Add to bag <span aria-hidden="true">→</span></button>
+            </form>
+            <a href="{{ url_for('books') }}" class="text-link">← Back to the library</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

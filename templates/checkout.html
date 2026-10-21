@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block title %}Checkout{% endblock %}
+
+{% block content %}
+<section class="container section">
+    <div class="page-heading">
+        <p class="eyebrow">One last step</p>
+        <h1>Checkout</h1>
+        <p>Confirm your delivery details and place your order.</p>
+    </div>
+    <div class="checkout-grid">
+        <section class="checkout-card surface">
+            <p class="eyebrow">Delivery details</p>
+            <h2>{{ customer.name }}</h2>
+            <dl class="profile-details">
+                <div><dt>Email</dt><dd>{{ customer.email }}</dd></div>
+                <div><dt>Address</dt><dd>{{ customer.address }}</dd></div>
+            </dl>
+            <a href="{{ url_for('profile') }}" class="text-link">Update profile details →</a>
+        </section>
+        <aside class="cart-summary checkout-summary">
+            <p class="eyebrow">Your order</p>
+            {% for item in cart_items %}
+            <div class="checkout-item">
+                <span>{{ item.book.title }} <span class="muted">× {{ item.quantity }}</span></span>
+                <strong>₹{{ '%.2f' % item.subtotal }}</strong>
+            </div>
+            {% endfor %}
+            <div class="summary-total">
+                <span>Total</span><strong>₹{{ '%.2f' % total }}</strong>
+            </div>
+            <form method="post" action="{{ url_for('place_order') }}">
+                <button type="submit" class="btn">Place order <span aria-hidden="true">→</span></button>
+            </form>
+            <p class="muted checkout-note">Your order will be recorded securely in your account.</p>
+        </aside>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block title %}Your bag{% endblock %}
+
+{% block content %}
+<section class="container section">
+    <div class="page-heading">
+        <p class="eyebrow">Almost yours</p>
+        <h1>Your bag</h1>
+        <p>Review your selections before checking out.</p>
+    </div>
+
+    {% if cart_items %}
+    <div class="cart-layout">
+        <div class="cart-list">
+            {% for item in cart_items %}
+            <article class="cart-item surface">
+                <div class="cart-item-cover" aria-hidden="true">&lt;/&gt;</div>
+                <div class="cart-item-info">
+                    <h2>{{ item.title }}</h2>
+                    <p class="muted">by {{ item.author }}</p>
+                    <p class="price">₹{{ '%.2f' % item.price }}</p>
+                </div>
+                <div class="cart-item-controls">
+                    <form method="post" action="{{ url_for('cart_update') }}" class="cart-quantity-form">
+                        <input type="hidden" name="book_id" value="{{ item.book_id }}">
+                        <label class="visually-hidden" for="quantity-{{ item.book_id }}">Quantity for {{ item.title }}</label>
+                        <input id="quantity-{{ item.book_id }}" type="number" name="quantity" value="{{ item.quantity }}" min="1" max="{{ item.stock }}">
+                        <button type="submit" class="btn btn-secondary">Update</button>
+                    </form>
+                    <form method="post" action="{{ url_for('cart_remove') }}">
+                        <input type="hidden" name="book_id" value="{{ item.book_id }}">
+                        <button type="submit" class="btn btn-danger confirm-delete">Remove</button>
+                    </form>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+        <aside class="cart-summary">
+            <p class="eyebrow">Order summary</p>
+            <h2>Ready when you are.</h2>
+            <div class="summary-line"><span>Subtotal</span><strong>₹{{ '%.2f' % total }}</strong></div>
+            <div class="summary-line"><span>Delivery</span><span class="muted">Calculated at checkout</span></div>
+            <div class="summary-total"><span>Total</span><strong>₹{{ '%.2f' % total }}</strong></div>
+            <a href="{{ url_for('checkout') }}" class="btn">Continue to checkout <span aria-hidden="true">→</span></a>
+            <a href="{{ url_for('books') }}" class="text-link">Keep exploring</a>
+        </aside>
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <span class="empty-icon" aria-hidden="true">∅</span>
+        <h2>Your bag is taking a little break.</h2>
+        <p>Find a book that sparks your curiosity and it will show up here.</p>
+        <a href="{{ url_for('books') }}" class="btn">Browse the library</a>
+    </div>
+    {% endif %}
+</section>
+{% endblock %}

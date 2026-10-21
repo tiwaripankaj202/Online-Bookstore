@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block title %}Your orders{% endblock %}
+
+{% block content %}
+<section class="container section">
+    <div class="page-heading">
+        <p class="eyebrow">Your reading journey</p>
+        <h1>{% if order %}Order details{% else %}Your orders{% endif %}</h1>
+        <p>Keep track of what you’ve ordered and what’s on its way.</p>
+    </div>
+
+    {% if order %}
+    <article class="order-card order-detail-card">
+        <div class="section-header">
+            <div><p class="eyebrow">Order #{{ order.order_id }}</p><h2>Order details</h2></div>
+            <span class="status-badge" data-status="{{ order.status }}">{{ order.status }}</span>
+        </div>
+        <div class="order-meta">
+            <p><span class="muted">Placed</span><strong>{{ order.order_date }}</strong></p>
+            <p><span class="muted">Total</span><strong>₹{{ '%.2f' % order.total_amount }}</strong></p>
+        </div>
+        <ul class="order-items">
+            {% for item in order['items'] %}
+            <li><span>{{ item.title }} <span class="muted">× {{ item.quantity }}</span></span><strong>₹{{ '%.2f' % (item.price * item.quantity) }}</strong></li>
+            {% endfor %}
+        </ul>
+        <a href="{{ url_for('orders') }}" class="text-link">← All orders</a>
+    </article>
+    {% elif orders %}
+    <div class="orders-list">
+        {% for order in orders %}
+        <article class="order-card">
+            <div class="section-header">
+                <div><p class="eyebrow">Order #{{ order.order_id }}</p><p class="muted">{{ order.order_date }}</p></div>
+                <span class="status-badge" data-status="{{ order.status }}">{{ order.status }}</span>
+            </div>
+            <div class="order-card-bottom">
+                <strong class="price">₹{{ '%.2f' % order.total_amount }}</strong>
+                <a href="{{ url_for('order_details', order_id=order.order_id) }}" class="btn btn-secondary">View details <span aria-hidden="true">→</span></a>
+            </div>
+        </article>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <h2>Your story starts with a first order.</h2>
+        <p>When you place an order, you’ll be able to follow its progress here.</p>
+        <a href="{{ url_for('books') }}" class="btn">Explore books</a>
+    </div>
+    {% endif %}
+</section>
+{% endblock %}

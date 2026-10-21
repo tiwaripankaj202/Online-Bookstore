@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <div class="container hero-content">
+        <div class="hero-text">
+            <p class="eyebrow">A library for curious minds</p>
+            <h1>Read between the <span class="highlight">queries.</span></h1>
+            <p>Find your next favorite in software, data, design, and the ideas shaping what comes next.</p>
+            <div class="hero-actions">
+                <a href="{{ url_for('books') }}" class="btn">Explore the library <span aria-hidden="true">→</span></a>
+                <a href="#featured-books" class="btn btn-secondary">See featured books</a>
+            </div>
+            <div class="hero-search">
+                <form method="get" action="{{ url_for('books') }}" class="search-form">
+                    <input type="search" name="q" placeholder="Search titles, authors, topics…" value="{{ request.args.get('q', '') }}" aria-label="Search books">
+                    <button type="submit" class="btn">Search</button>
+                </form>
+            </div>
+            <div class="hero-meta" aria-label="Store highlights">
+                <span>Books for builders</span>
+                <span>Ideas worth keeping</span>
+            </div>
+        </div>
+        <div class="hero-visual" aria-label="A database-inspired illustration">
+            <div class="hero-code-card">
+                <div class="hero-code-head"><span>query.sql</span><span>● ● ●</span></div>
+                <pre><span class="code-purple">SELECT</span> next_read
+<span class="code-purple">FROM</span> curious_minds
+<span class="code-purple">WHERE</span> topic <span class="code-red">IN</span> (
+  <span class="code-green">'ideas'</span>, <span class="code-green">'stories'</span>
+);</pre>
+            </div>
+            <span class="hero-float-label one"><b>01</b> discover</span>
+            <span class="hero-float-label two"><b>∞</b> keep learning</span>
+        </div>
+    </div>
+</section>
+
+<section class="container section" id="featured-books">
+    <div class="section-header">
+        <div>
+            <p class="eyebrow">Hand-picked for you</p>
+            <h2>Featured books</h2>
+        </div>
+        <a href="{{ url_for('books') }}" class="text-link">Browse the full library →</a>
+    </div>
+    <div class="book-grid">
+        {% for book in books %}
+        <article class="book-card">
+            <a class="book-card-image" href="{{ url_for('book_details', book_id=book.book_id) }}" tabindex="-1" aria-hidden="true">
+                <img src="{{ book.image_url }}" alt="" loading="lazy">
+                <span class="pill">{{ book.category }}</span>
+            </a>
+            <div class="book-card-body">
+                <h3>{{ book.title }}</h3>
+                <p class="book-author">by {{ book.author }}</p>
+                <div class="book-card-bottom">
+                    <span class="price">₹{{ '%.2f' % book.price }}</span>
+                    <div class="card-actions">
+                        <a href="{{ url_for('book_details', book_id=book.book_id) }}" class="btn btn-secondary">Details</a>
+                        <form method="post" action="{{ url_for('cart_add') }}" class="add-to-cart-form">
+                        <input type="hidden" name="book_id" value="{{ book.book_id }}">
+                        <input type="hidden" name="quantity" value="1">
+                        <button type="submit" class="btn" {% if book.stock < 1 %}disabled{% endif %}>Add</button>
+                        </form>
+                    </div>
+                </div>
+                <span class="stock-note">{% if book.stock > 0 %}{{ book.stock }} available{% else %}Currently unavailable{% endif %}</span>
+            </div>
+        </article>
+        {% else %}
+        <div class="empty-state">
+            <h3>Your next read is waiting</h3>
+            <p>We couldn't find any featured books right now.</p>
+            <a href="{{ url_for('books') }}" class="btn btn-secondary">Explore the library</a>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="container section">
+    <div class="home-code-strip">
+        <span class="code-mark" aria-hidden="true">&lt;/&gt;</span>
+        <pre><span class="code-purple">SELECT</span> knowledge <span class="code-purple">FROM</span> every_page <span class="code-red">ORDER BY</span> curiosity;</pre>
+        <a href="{{ url_for('books') }}" class="text-link">Start exploring →</a>
+    </div>
+</section>
+{% endblock %}
